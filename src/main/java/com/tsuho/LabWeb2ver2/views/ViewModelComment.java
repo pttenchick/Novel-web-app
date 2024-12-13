@@ -1,15 +1,14 @@
 package com.tsuho.LabWeb2ver2.views;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ViewModelComment {
 
+    private String userName;
     private String content;
-    private Integer chapterId;
-    private Integer userId;
     private String commentDate;
 }

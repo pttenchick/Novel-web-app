@@ -27,19 +27,19 @@ public class NovelController {
         return new ResponseEntity<>(viewModelNovel, HttpStatus.CREATED);
     }
 
-    @GetMapping("searchNovelByTitle/{title}")
+    @GetMapping("get/searchNovelByTitle/{title}")
     private ResponseEntity<ViewModelNovel> findNovelByTitle(@PathVariable("title") String title) {
         ViewModelNovel viewModelNovel = this.novelService.findByName(title);
         return new ResponseEntity<>(viewModelNovel, HttpStatus.OK);
     }
 
-    @GetMapping("searchNovelByAuthor/{author}")
+    @GetMapping("get/searchNovelByAuthor/{author}")
     private ResponseEntity<List<ViewModelListNovels>> findNovelByAuthor(@PathVariable("author") String author) {
         List<ViewModelListNovels> viewModelListNovels = this.novelService.findByAuthor(author);
         return new ResponseEntity<>(viewModelListNovels, HttpStatus.OK);
     }
 
-    @GetMapping("getListNovelByGenre/{genre}")
+    @GetMapping("get/getListNovelByGenre/{genre}")
     private ResponseEntity<List<ViewModelListNovels>> getListNovelByGenre(@PathVariable("genre") String genre) {
         List<ViewModelListNovels> listNovels = this.novelService.findByGenre(genre);
         return new ResponseEntity<>(listNovels, HttpStatus.OK);

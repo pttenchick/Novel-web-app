@@ -26,9 +26,9 @@ public class CommentServiceImpl implements CommentService {
     private static final Logger logger = LogManager.getLogger(CommentServiceImpl.class);
 
     @Autowired
-    private final CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     @Autowired
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private ValidationUtil validationUtil;
     @Autowired
@@ -36,11 +36,6 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, ModelMapper modelMapper) {
-        this.commentRepository = commentRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public ViewModelComment addComment(CommentDto commentDto) {
@@ -55,27 +50,6 @@ public class CommentServiceImpl implements CommentService {
         else {
 
             Comment comment = modelMapper.map(commentDto, Comment.class);
-
-            // Получаем главу по ID из DTO
-            Chapter chapter = chapterRepository.findById(commentDto.getChapterId());
-            if (chapter != null) {
-                comment.setChapter(chapter);
-            } else {
-
-                logger.error("Глава с ID {} не найдена", commentDto.getChapterId());
-                return null;
-            }
-
-            // Получаем пользователя по ID из DTO
-            User user = userRepository.findById(commentDto.getUserId());
-            if (user != null) {
-                comment.setUser(user); // Устанавливаем связь с пользователем
-            } else {
-
-                logger.error("Пользователь с ID {} не найден", commentDto.getUserId());
-                return null;
-            }
-
             comment = commentRepository.save(comment);
             return modelMapper.map(comment, ViewModelComment.class);
         }

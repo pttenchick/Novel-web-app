@@ -1,8 +1,6 @@
 package com.tsuho.LabWeb2ver2.service.impl;
 
-import com.tsuho.LabWeb2ver2.model.Author;
 import com.tsuho.LabWeb2ver2.model.User;
-import com.tsuho.LabWeb2ver2.repository.AuthorRepository;
 import com.tsuho.LabWeb2ver2.repository.UserRepository;
 import com.tsuho.LabWeb2ver2.service.DTO.UserDto;
 import com.tsuho.LabWeb2ver2.service.UserService;
@@ -27,8 +25,6 @@ public class UserServiceImpl implements UserService {
     private ValidationUtil validationUtil;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private AuthorRepository authorRepository;
 
     @Override
     public void addUser(UserDto userDto) {
@@ -42,15 +38,6 @@ public class UserServiceImpl implements UserService {
         }
         else {
             User user = this.modelMapper.map(userDto, User.class);
-//
-//            Author author = new Author();
-//            author.setName(userDto.getName());
-//            author.setUser(user);
-//            author.setId(user.getId());
-//            authorRepository.save(author);
-//
-//            user.setAuthor(author);
-
             this.userRepository.saveAndFlush(user);
         }
 
@@ -63,8 +50,8 @@ public class UserServiceImpl implements UserService {
             logger.error("Пользователь с таким именем не найден");
             return null;
         }
-        //Можно добавить скрытие емейл
-        return new ViewModelUser(user.getId(), user.getName(), user.getEmail());
+
+        return this.modelMapper.map(user, ViewModelUser.class);
 
     }
 
@@ -75,7 +62,7 @@ public class UserServiceImpl implements UserService {
             logger.error("Пользователь с таким ID не найден");
             return null;
         }
-        return new ViewModelUser(user.getId(), user.getName(), user.getEmail());
+        return this.modelMapper.map(user, ViewModelUser.class);
     }
 
 

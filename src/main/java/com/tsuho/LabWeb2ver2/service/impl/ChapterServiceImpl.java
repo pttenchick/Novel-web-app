@@ -22,19 +22,13 @@ public class ChapterServiceImpl implements ChapterService {
 
 
     @Autowired
-    private final ChapterRepository chapterRepository;
+    private ChapterRepository chapterRepository;
     @Autowired
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Autowired
     private ValidationUtil validationUtil;
     @Autowired
     private NovelRepository novelRepository;
-
-    @Autowired
-    public ChapterServiceImpl(ChapterRepository chapterRepository, ModelMapper modelMapper) {
-        this.chapterRepository = chapterRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public ViewModelChapter addChapter(ChapterDto chapterDto) {
@@ -47,22 +41,8 @@ public class ChapterServiceImpl implements ChapterService {
         }
         else{
             Chapter chapter = modelMapper.map(chapterDto, Chapter.class);
-
-            // Получаем новеллу по имени из DTO
-            Novel novel = novelRepository.findByName(chapterDto.getNovelTitle());
-            if (novel != null) {
-                chapter.setNovel(novel);
-
-                Integer maxChapterNumber = chapterRepository.findMaxChapterNumberByNovelId(Long.valueOf(novel.getId()));
-                chapter.setChapterNumber(maxChapterNumber != null ? maxChapterNumber + 1 : 1);
-
-                chapterRepository.save(chapter);
-                return modelMapper.map(chapter, ViewModelChapter.class);
-            } else {
-                // Обработка случая, когда новелла не найдена
-                logger.error("Новелла с именем {} не найдена", chapterDto.getNovelTitle());
-                return null; // или выбросьте исключение
-            }
+            this.chapterRepository.saveAndFlush(chapter);
+            return this.modelMapper.map(chapter, ViewModelChapter.class);
 
         }
         logger.error("Что-то пошло не так с добавлением главы!");

@@ -22,10 +22,8 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    //Связь проверена // Каскад сделан
-    @OneToOne
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @OneToMany(mappedBy = "user")
+    private List<Novel> novels = new ArrayList<>();
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String name;
@@ -36,8 +34,15 @@ public class User{
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 10)
-    private String role;
+    private Role role;
+
+    @Column(name = "biography", columnDefinition = "text")
+    private String biography;
+
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
 
 }

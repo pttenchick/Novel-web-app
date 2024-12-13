@@ -19,10 +19,10 @@ public class ViewModelNovel {
     String name;
     String descriptions;
     String nameAuthor;
-    List<Genre> genres;
+    List<String> genres;
     String status;
     String coverImage;
     String publicationDate;
-    List<Chapter> chapters;
+    List<ViewModelChapter> chapters;
 
 }

@@ -19,13 +19,13 @@ public class Comment {
 
 //СВязь проверена // Каскад сделан
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "chapter_id") // Вместо chapters
-    private Chapter chapter; // Теперь поле типа Chapter
+    @JoinColumn(name = "chapter_id")
+    private Chapter chapter;
 
     //Связь проверена // Каскад сделан
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id") // Вместо users
-    private User user; // Теперь поле типа User
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "content", nullable = false)
     private String content;

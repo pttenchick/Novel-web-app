@@ -14,11 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationBeanConfiguration {
 
     @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
-
-    @Bean
     public Validator validator() {
         return Validation.buildDefaultValidatorFactory().getValidator();
     }

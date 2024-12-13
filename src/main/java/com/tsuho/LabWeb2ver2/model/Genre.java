@@ -28,8 +28,7 @@ public class Genre{
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    //Связь проверена Каскадка не нужна
-    @ManyToMany(mappedBy = "genres")
+    @OneToMany(mappedBy = "genresForNovel")
     private List<Novel> novels = new ArrayList<>();
 
 }

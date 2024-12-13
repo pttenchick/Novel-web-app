@@ -9,6 +9,7 @@ import com.tsuho.LabWeb2ver2.service.GenreService;
 import com.tsuho.LabWeb2ver2.utils.ValidationUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class GenreServiceImpl implements GenreService {
     private GenreRepository genreRepository;
     @Autowired
     private ValidationUtil validationUtil;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public void addGenre(GenreDto genreDto) {
@@ -33,9 +36,7 @@ public class GenreServiceImpl implements GenreService {
             return; // Если валидация не прошла, выходим из метода
         }
 
-        Genre genre = new Genre();
-        genre.setName(genreDto.getName());
-        genre.setDescription(genreDto.getDescription());
+        Genre genre = this.modelMapper.map(genreDto, Genre.class);
 
         // Проверяем на уникальность названия жанра
         if (genreRepository.findByName(genre.getName()) != null) {
@@ -52,6 +53,6 @@ public class GenreServiceImpl implements GenreService {
 
        Genre genre = genreRepository.findByName(name);
 
-        return new ViewModelGenre(genre.getName(), genre.getDescription());
+        return this.modelMapper.map(genre, ViewModelGenre.class);
     }
 }

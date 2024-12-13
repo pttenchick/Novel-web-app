@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChapterDto {
+    private Integer id;
     private String name;
     private String content;
     private String publicationDate;

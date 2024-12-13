@@ -1,11 +1,11 @@
 package com.tsuho.LabWeb2ver2.service.impl;
 
-import com.tsuho.LabWeb2ver2.model.Author;
 import com.tsuho.LabWeb2ver2.model.Genre;
 import com.tsuho.LabWeb2ver2.model.Novel;
-import com.tsuho.LabWeb2ver2.repository.AuthorRepository;
+import com.tsuho.LabWeb2ver2.model.User;
 import com.tsuho.LabWeb2ver2.repository.GenreRepository;
 import com.tsuho.LabWeb2ver2.repository.NovelRepository;
+import com.tsuho.LabWeb2ver2.repository.UserRepository;
 import com.tsuho.LabWeb2ver2.service.DTO.NovelDto;
 import com.tsuho.LabWeb2ver2.service.NovelService;
 import com.tsuho.LabWeb2ver2.utils.ValidationUtil;
@@ -29,7 +29,7 @@ public class NovelServiceImpl implements NovelService {
     private static final Logger logger = LogManager.getLogger(NovelServiceImpl.class);
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private NovelRepository novelRepository;
@@ -55,30 +55,7 @@ public class NovelServiceImpl implements NovelService {
         }
         else {
             Novel novel = this.modelMapper.map(novelDto, Novel.class);
-
-            // Получение автора по имени
-            Author author = authorRepository.findByName(novelDto.getAuthorName());
-            if (author != null) {
-                novel.setAuthor(author);
-            } else {
-                logger.error("Автор с именем {} не найден", novelDto.getAuthorName());
-                return null; // или выбросьте исключение
-            }
-
-            // Получение жанров и установка их в новеллу
-            List<Genre> genres = new ArrayList<>();
-            for (String genreName : novelDto.getGenres()) {
-                Genre genre = genreRepository.findByName(genreName);
-                if (genre != null) {
-                    genres.add(genre);
-                    logger.info("Добавлен жанр: {}", genre.getName());
-                } else {
-                    logger.warn("Жанр с именем {} не найден", genreName);
-                }
-            }
-            novel.setGenres(genres);
             this.novelRepository.saveAndFlush(novel);
-            // Верните созданную новеллу в нужном формате
             return this.modelMapper.map(novel, ViewModelNovel.class);
         }
 
@@ -93,39 +70,36 @@ public class NovelServiceImpl implements NovelService {
             logger.error("Новелла с таким именем не найден");
             return null;
         }
-        //Можно добавить скрытие емейл
-        return new ViewModelNovel(novel.getName(), novel.getDescription(), novel.getAuthor().getName(), novel.getGenres(), novel.getStatus(),novel.getCoverImage(), novel.getPublicationDate(), novel.getChapters());
+
+        return this.modelMapper.map(novel, ViewModelNovel.class);
     }
 
     @Override
     public List<ViewModelListNovels> findByAuthor(String nameAuthor) {
 
-        Author author = authorRepository.findByName(nameAuthor);
+        User user = userRepository.findByName(nameAuthor);
+        List<Novel> novels = novelRepository.findByUser(user);
 
-        List<Novel> novel = novelRepository.findByAuthor(author);
-
-        if (novel== null) {
+        if (novels == null) {
             logger.error("Новеллы от этого автора не найдены");
             return null;
         }
         List<ViewModelListNovels> viewModelList = new ArrayList<>();
 
-        for (Novel value : novel) {
-            viewModelList.add(new ViewModelListNovels(value.getName(), value.getStatus(), value.getAuthor().getName(), value.getCoverImage()));
+        for (Novel novel: novels) {
+            viewModelList.add(this.modelMapper.map(novel, ViewModelListNovels.class));
         }
-
-        return  viewModelList;
+        return viewModelList;
     }
 
     public List<ViewModelListNovels> findByGenre(String name){
         Genre genre = genreRepository.findByName(name);
-        //Стоит ли тут сразу имя кидать?
         List<Novel> novels = novelRepository.findByGenres(genre);
         List<ViewModelListNovels> viewModelList = new ArrayList<>();
-        for (Novel value : novels) {
-            viewModelList.add(new ViewModelListNovels(value.getName(), value.getStatus(), value.getAuthor().getName(), value.getCoverImage()));
-        }
 
-        return  viewModelList;
+        for (Novel novel: novels) {
+            viewModelList.add(this.modelMapper.map(novel, ViewModelListNovels.class));
+        }
+        return viewModelList;
     }
 }

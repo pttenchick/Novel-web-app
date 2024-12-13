@@ -1,8 +1,6 @@
 package com.tsuho.LabWeb2ver2.controller;
 
 
-import com.tsuho.LabWeb2ver2.repository.AuthorRepository;
-import com.tsuho.LabWeb2ver2.service.AuthorService;
 import com.tsuho.LabWeb2ver2.service.UserService;
 import com.tsuho.LabWeb2ver2.views.ViewModelUser;
 import com.tsuho.LabWeb2ver2.service.DTO.UserDto;

@@ -22,54 +22,32 @@ public class Novel{
     @Column(name = "novel_id")
     private Integer id;
 
-    private String name;
-    private String description;
-    private String coverImage;
-    private String publicationDate;
-    private String status;
-
     //Связь проверена
-    @ManyToMany
-    @JoinTable(name = "novels_genres",
-            joinColumns = @JoinColumn(name = "novelId"),
-            inverseJoinColumns = @JoinColumn(name = "genreId"))
+    @OneToMany(mappedBy = "novelsForGenre")
     private List<Genre> genres = new ArrayList<>();
 
     //Связь проверена // Каскад не нужен
     @OneToMany(mappedBy = "novel")
     private List<Chapter> chapters = new ArrayList<>();
 
-    @Column(name = "title", nullable = false, length = 255)
-    public String getName() {
-        return name;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    public String getDescription() {
-        return description;
-    }
+    @Column(name = "name", nullable = false, length = 255)
+    private String name;
 
-    //Связь проверена
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "author_id")
-    public Author author;
+    @Column(name = "description", columnDefinition = "text")
+    private String description;
 
     @Column(name = "cover_image", length = 255)
-    public String getCoverImage() {
-        return coverImage;
-    }
+    private String coverImage;
 
     @Column(name = "publication_date", length = 20)
-    public String getPublicationDate() {
-        return publicationDate;
-    }
+    private String publicationDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    public String getStatus() {
-        return status;
-    }
-
-
-
+    private Status status;
 
 }
